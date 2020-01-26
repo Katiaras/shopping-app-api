@@ -29,12 +29,17 @@ namespace ShoppingApp.API.Controllers {
     }
 
     
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetShoppingList (int id) {
         _logger.LogDebug(id.ToString());
         var shoppingList = await _context.ShoppingLists
             .FirstOrDefaultAsync(sl => sl.Id == id);
 
+        if(shoppingList == null) {
+          string message = $"Couldn't find the List with Id {id}";
+          _logger.LogError(message);
+          return NotFound(message);
+        }
         return Ok(shoppingList);
     }
   }
